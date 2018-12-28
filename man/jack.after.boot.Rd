@@ -8,7 +8,7 @@ This function calculates the jackknife influence values from a bootstrap
 output object and plots the corresponding jackknife-after-bootstrap plot.
 }
 \usage{
-jack.after.boot(boot.out, index = 1, t = NULL, L = NULL,
+jack.after.boot(boot.out, dimension = 1, index = 1, t = NULL, L = NULL,
                 useJ = TRUE, stinf = TRUE, alpha = NULL,
                 main = "", ylab = NULL, \dots)
 }
@@ -17,6 +17,12 @@ jack.after.boot(boot.out, index = 1, t = NULL, L = NULL,
 An object of class \code{"boot"} which would normally be created by a call
 to \code{\link{boot}}. It should represent a nonparametric bootstrap.
 For reliable results \code{boot.out$R} should be reasonably large.
+}
+\item{dimension}{
+The dimension of the \code{data} object that should be bootstrapped over.
+It corresponds to: 1 = rows, 2 = columns, 3 = 3rd dimension, etc. This dimension
+should match the dimension of the \code{indices} argument in the supplied
+\code{statistic}. Default is 1.
 }
 \item{index}{
 The index of the statistic of interest in the output of \code{boot.out$statistic}.

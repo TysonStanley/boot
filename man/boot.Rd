@@ -15,7 +15,8 @@ Bootstrap Resampling
   Importance resampling weights may be specified.
 }
 \usage{
-boot(data, statistic, R, sim = "ordinary", stype = c("i", "f", "w"), 
+boot(data, statistic, R, dimension = 1, 
+     sim = "ordinary", stype = c("i", "f", "w"), 
      strata = rep(1,n), L = NULL, m = 0, weights = NULL, 
      ran.gen = function(d, p) d, mle = NULL, simple = FALSE, ...,
      parallel = c("no", "multicore", "snow"),
@@ -48,6 +49,12 @@ boot(data, statistic, R, sim = "ordinary", stype = c("i", "f", "w"),
     this case \code{R} would be a vector of integers where each
     component gives the number of resamples from each of the rows of
     weights.
+  }
+  \item{dimension}{
+    The dimension of the \code{data} object that should be bootstrapped over.
+    It corresponds to: 1 = rows, 2 = columns, 3 = 3rd dimension, etc. This dimension
+    should match the dimension of the \code{indices} argument in the supplied
+    \code{statistic}. Default is 1.
   }
   \item{sim}{
     A character string indicating the type of simulation required.

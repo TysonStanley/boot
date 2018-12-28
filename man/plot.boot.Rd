@@ -9,7 +9,7 @@ replicates of the variable of interest.
 }
 \usage{
 \method{plot}{boot}(x, index = 1, t0 = NULL, t = NULL, jack = FALSE,
-     qdist = "norm", nclass = NULL, df, \dots)
+     qdist = "norm", nclass = NULL, df, dimension = 1, \dots)
 }
 \arguments{
   \item{x}{
@@ -52,6 +52,12 @@ replicates of the variable of interest.
     If \code{qdist} is \code{"chisq"} then this is the degrees of
     freedom for the chi-squared distribution to be used.  It is a
     required argument in that case.
+  }
+  \item{dimension}{
+    The dimension of the \code{data} object that should be bootstrapped over.
+    It corresponds to: 1 = rows, 2 = columns, 3 = 3rd dimension, etc. This dimension
+    should match the dimension of the \code{indices} argument in the supplied
+    \code{statistic}. Default is 1.
   }
   \item{...}{
     When \code{jack} is \code{TRUE} additional parameters to

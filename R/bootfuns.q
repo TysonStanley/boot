@@ -83,10 +83,13 @@ balanced.array <- function(n, R, strata)
     t(output)
 }
 
-boot <- function(data, statistic, R, sim = "ordinary",
+boot <- function(data, statistic, R, 
+                 dimension = 1,
+                 sim = "ordinary",
                  stype = c("i", "f", "w"),
                  strata  =  rep(1, n), L = NULL, m = 0, weights = NULL,
-		 ran.gen = function(d, p) d, mle = NULL, simple = FALSE, ...,
+		             ran.gen = function(d, p) d, mle = NULL, simple = FALSE, 
+		             ...,
                  parallel = c("no", "multicore", "snow"),
                  ncpus = getOption("boot.ncpus", 1L), cl = NULL)
 {
@@ -117,7 +120,7 @@ boot <- function(data, statistic, R, sim = "ordinary",
     
     if (length(dim(data)) > 2){
       n <- dim(data)
-      n <- n[length(n)]
+      n <- n[dimension]
     } else {
       n <- NROW(data)
     }
@@ -338,7 +341,7 @@ boot.array <- function(boot.out, indices=FALSE) {
 }
 
 plot.boot <- function(x,index=1, t0=NULL, t=NULL, jack=FALSE,
-	qdist="norm",nclass=NULL,df, ...) {
+	qdist="norm",nclass=NULL,df, dimension = 1, ...) {
 #
 #  A plot method for bootstrap output objects.  It produces a histogram
 #  of the bootstrap replicates and a QQ plot of them.  Optionally it can
@@ -388,7 +391,7 @@ plot.boot <- function(x,index=1, t0=NULL, t=NULL, jack=FALSE,
         qqplot(qq,t,xlab=qlab,ylab="t*")
         if (qdist == "norm") abline(mean(t),sqrt(var(t)),lty=2)
         else abline(0,1,lty=2)
-        jack.after.boot(boot.out,index=index,t=t.o, ...)
+        jack.after.boot(boot.out,index=index,t=t.o, dimension = dimension, ...)
     }
     else {
         par(mfrow=c(1,2))
@@ -717,7 +720,7 @@ index.array <- function(n, R, sim, strata=rep(1,n), m=0, L=NULL, weights=NULL)
     indices
 }
 
-jack.after.boot <- function(boot.out, index=1, t=NULL, L=NULL,
+jack.after.boot <- function(boot.out, dimension = 1, index=1, t=NULL, L=NULL,
 	useJ=TRUE, stinf = TRUE, alpha=NULL, main = "", ylab=NULL, ...)
 {
 # jackknife after bootstrap plot
@@ -741,7 +744,7 @@ jack.after.boot <- function(boot.out, index=1, t=NULL, L=NULL,
    
     if (length(dim(data)) > 2){
       n <- dim(data)
-      n <- n[length(n)]
+      n <- n[dimension]
     } else {
       n <- NROW(data)
     }
@@ -853,12 +856,7 @@ cv.glm <- function(data, glmfit, cost=function(y,yhat) mean((y-yhat)^2),
     if (!exists(".Random.seed", envir=.GlobalEnv, inherits = FALSE)) runif(1)
     seed <- get(".Random.seed", envir=.GlobalEnv, inherits = FALSE)
     
-    if (length(dim(data)) > 2){
-      n <- dim(data)
-      n <- n[length(n)]
-    } else {
-      n <- nrow(data)
-    }
+    n <- nrow(data)
     
     if ((K > n) || (K <= 1))
         stop("'K' outside allowable range")
@@ -1245,7 +1243,7 @@ bca.ci <-
 
 
 
-abc.ci <- function(data, statistic, index = 1, strata = rep(1, n), conf = 0.95,
+abc.ci <- function(data, statistic, index = 1, dimension = 1, strata = rep(1, n), conf = 0.95,
                    eps = 0.001/n, ...)
 #
 #   Non-parametric ABC method for constructing confidence intervals.
@@ -1255,7 +1253,7 @@ abc.ci <- function(data, statistic, index = 1, strata = rep(1, n), conf = 0.95,
     
     if (length(dim(data)) > 2){
       n <- dim(data)
-      n <- n[length(n)]
+      n <- n[dimension]
     } else {
       n <- NROW(data)
     }
@@ -1316,7 +1314,7 @@ abc.ci <- function(data, statistic, index = 1, strata = rep(1, n), conf = 0.95,
 
 censboot <-
     function(data, statistic, R, F.surv, G.surv, strata = matrix(1, n, 2),
-             sim = "ordinary", cox = NULL, index = c(1, 2), ...,
+             dimension = 1, sim = "ordinary", cox = NULL, index = c(1, 2), ...,
              parallel = c("no", "multicore", "snow"),
              ncpus = getOption("boot.ncpus", 1L), cl = NULL)
 {
@@ -1346,7 +1344,7 @@ censboot <-
     if (isMatrix(data)) {
       if (length(dim(data)) > 2){
         n <- dim(data)
-        n <- n[length(n)]
+        n <- n[dimension]
       } else {
         n <- NROW(data)
       }
@@ -1417,7 +1415,7 @@ censboot <-
             }
         }
     } else {
-        bt <- cens.resamp(data, R, F.surv, G.surv, strata, index, cox, sim)
+        bt <- cens.resamp(data, R, F.surv, G.surv, strata, index, cox, sim, dimension = dimension)
         function(r) {
             bootdata <- data
             bootdata[, index] <- bt[r, , ]
@@ -1518,7 +1516,7 @@ cens.weird <- function(data, surv, strata) {
 
 
 
-cens.resamp <- function(data, R, F.surv, G.surv, strata, index = c(1,2),
+cens.resamp <- function(data, R, F.surv, G.surv, strata, dimension = 1, index = c(1,2),
                         cox = NULL, sim = "model")
 {
 #
@@ -1610,7 +1608,7 @@ cens.resamp <- function(data, R, F.surv, G.surv, strata, index = c(1,2),
     
     if (length(dim(data)) > 2){
       n <- dim(data)
-      n <- n[length(n)]
+      n <- n[dimension]
     } else {
       n <- NROW(data)
     }
@@ -1653,7 +1651,7 @@ cens.resamp <- function(data, R, F.surv, G.surv, strata, index = c(1,2),
 }
 
 empinf <- function(boot.out = NULL, data = NULL, statistic = NULL,
-                   type = NULL, stype = NULL ,index = 1, t = NULL,
+                   dimension = 1, type = NULL, stype = NULL ,index = 1, t = NULL,
                    strata = rep(1, n), eps = 0.001, ...)
 {
 #
@@ -1686,7 +1684,7 @@ empinf <- function(boot.out = NULL, data = NULL, statistic = NULL,
     
     if (length(dim(data)) > 2){
       n <- dim(data)
-      n <- n[length(n)]
+      n <- n[dimension]
     } else {
       n <- NROW(data)
     }
@@ -1709,7 +1707,7 @@ empinf <- function(boot.out = NULL, data = NULL, statistic = NULL,
         }
         if (!is.null(t))
             warning("input 't' ignored; type=\"inf\"")
-        L <- inf.jack(data, statistic, index, strata, eps, ...)
+        L <- inf.jack(data, statistic, dimension, index, strata, eps, ...)
     } else if (type == "reg") {
 # calculate the regression estimates of the influence values
         if (is.null(boot.out))
@@ -1721,7 +1719,7 @@ empinf <- function(boot.out = NULL, data = NULL, statistic = NULL,
             }
             t <- boot.out$t[,index]
         }
-        L <- empinf.reg(boot.out, t)
+        L <- empinf.reg(boot.out, t, dimension)
     } else if (type == "jack") {
         if (!is.null(t))
             warning("input 't' ignored; type=\"jack\"")
@@ -1729,7 +1727,7 @@ empinf <- function(boot.out = NULL, data = NULL, statistic = NULL,
             warning("only first element of 'index' used")
             index <- index[1L]
         }
-        L <- usual.jack(data, statistic, stype, index, strata, ...)
+        L <- usual.jack(data, statistic, stype, index, strata, dimension = dimension, ...)
     } else if (type == "pos") {
         if (!is.null(t))
             warning("input 't' ignored; type=\"pos\"")
@@ -1737,13 +1735,13 @@ empinf <- function(boot.out = NULL, data = NULL, statistic = NULL,
             warning("only first element of 'index' used")
             index <- index[1L]
         }
-        L <- positive.jack(data, statistic, stype, index, strata, ...)
+        L <- positive.jack(data, statistic, stype, index, strata, dimension = dimension, ...)
     }
     L
 }
 
 inf.jack <-
-    function(data, stat, index = 1, strata  =  rep(1, n), eps  =  0.001, ...)
+    function(data, stat, dimension = 1, index = 1, strata  =  rep(1, n), eps  =  0.001, ...)
 {
 #
 #   Numerical differentiation to get infinitesimal jackknife estimates
@@ -1752,7 +1750,7 @@ inf.jack <-
     
     if (length(dim(data)) > 2){
       n <- dim(data)
-      n <- n[length(n)]
+      n <- n[dimension]
     } else {
       n <- NROW(data)
     }
@@ -1772,7 +1770,7 @@ inf.jack <-
     L
 }
 
-empinf.reg <- function(boot.out, t = boot.out$t[,1L])
+empinf.reg <- function(boot.out, t = boot.out$t[,1L], dimension = 1)
 #
 #  Function to estimate empirical influence values using regression.
 #  This method regresses the observed bootstrap values on the bootstrap
@@ -1785,7 +1783,7 @@ empinf.reg <- function(boot.out, t = boot.out$t[,1L])
     
     if (length(dim(boot.out$data)) > 2){
       n <- dim(boot.out$data)
-      n <- n[length(n)]
+      n <- n[dimension]
     } else {
       n <- NROW(boot.out$data)
     }
@@ -1809,17 +1807,17 @@ empinf.reg <- function(boot.out, t = boot.out$t[,1L])
 }
 
 usual.jack <- function(data, stat, stype = "w", index = 1,
-                       strata = rep(1, n), ...)
+                       dimension = 1, strata = rep(1, n), ...)
 #
 #  Function to use the normal (delete 1) jackknife method to estimate the
 #  empirical influence values
 #
 {
-    if (length(dim(boot.out$data)) > 2){
-      n <- dim(boot.out$data)
-      n <- n[length(n)]
+    if (length(dim(data)) > 2){
+      n <- dim(data)
+      n <- n[dimension]
     } else {
-      n <- NROW(boot.out$data)
+      n <- NROW(data)
     }
   
     l <- rep(0,n)
@@ -1856,7 +1854,7 @@ usual.jack <- function(data, stat, stype = "w", index = 1,
 }
 
 positive.jack <- function(data, stat, stype = "w", index = 1,
-                          strata = rep(1 ,n), ...)
+                          strata = rep(1 ,n), dimension = 1, ...)
 {
 #
 #  Use the positive jackknife to estimate the empirical influence values.
@@ -1865,11 +1863,11 @@ positive.jack <- function(data, stat, stype = "w", index = 1,
 #
     strata <- tapply(strata,as.numeric(strata))
     
-    if (length(dim(boot.out$data)) > 2){
-      n <- dim(boot.out$data)
-      n <- n[length(n)]
+    if (length(dim(data)) > 2){
+      n <- dim(data)
+      n <- n[dimension]
     } else {
-      n <- NROW(boot.out$data)
+      n <- NROW(data)
     }
     
     
@@ -1907,7 +1905,7 @@ positive.jack <- function(data, stat, stype = "w", index = 1,
 }
 
 linear.approx <- function(boot.out, L = NULL, index = 1, type = NULL,
-                          t0 = NULL, t = NULL, ...)
+                          dimension = 1, t0 = NULL, t = NULL, ...)
 #
 #  Find the linear approximation to the bootstrap replicates of a
 #  statistic.  L should be the linear influence values which will
@@ -1923,11 +1921,11 @@ linear.approx <- function(boot.out, L = NULL, index = 1, type = NULL,
     if (is.null(t0)) {
         t0 <- boot.out$t0[index]
         if (is.null(L))
-            L <- empinf(boot.out, index=index, type=type, ...)
+            L <- empinf(boot.out, index=index, type=type, dimension = dimension, ...)
     } else if (is.null(t) && is.null(L)) {
         warning("input 't0' ignored: neither 't' nor 'L' supplied")
         t0 <- t0[index]
-        L <- empinf(boot.out, index=index, type=type, ...)
+        L <- empinf(boot.out, index=index, type=type, dimension = dimension, ...)
     }
     else if (is.null(L))
         L <- empinf(boot.out, type=type, t=t, ...)
@@ -2426,11 +2424,11 @@ tilt.boot <- function(data, statistic, R, sim="ordinary",
         stop("R[1L] must be positive for frequency smoothing")
     call <- match.call()
     
-    if (length(dim(boot.out$data)) > 2){
-      n <- dim(boot.out$data)
+    if (length(dim(data)) > 2){
+      n <- dim(data)
       n <- n[length(n)]
     } else {
-      n <- NROW(boot.out$data)
+      n <- NROW(data)
     }
     
     if (R[1L]>0) {

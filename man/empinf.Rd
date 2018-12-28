@@ -14,7 +14,7 @@
 }
 \usage{
 empinf(boot.out = NULL, data = NULL, statistic = NULL,
-       type = NULL, stype = NULL ,index = 1, t = NULL,
+       dimension = 1, type = NULL, stype = NULL ,index = 1, t = NULL,
        strata = rep(1, n), eps = 0.001, ...)
 }
 \arguments{
@@ -43,6 +43,12 @@ empinf(boot.out = NULL, data = NULL, statistic = NULL,
     to \code{statistic} unchanged. This is a required argument if
     \code{boot.out} is not supplied, otherwise its value is taken from
     \code{boot.out} and any value supplied here will be ignored.
+  }
+  \item{dimension}{
+    The dimension of the \code{data} object that should be bootstrapped over.
+    It corresponds to: 1 = rows, 2 = columns, 3 = 3rd dimension, etc. This dimension
+    should match the dimension of the \code{indices} argument in the supplied
+    \code{statistic}. Default is 1.
   }
   \item{type}{
     The calculation type to be used for the empirical influence

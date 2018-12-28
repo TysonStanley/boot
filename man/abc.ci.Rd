@@ -9,7 +9,7 @@ intervals for a parameter, given a set of data and an estimator of the
 parameter, using numerical differentiation.  
 }
 \usage{
-abc.ci(data, statistic, index=1, strata=rep(1, n), conf=0.95, 
+abc.ci(data, statistic, index=1, dimension = 1, strata=rep(1, n), conf=0.95, 
        eps=0.001/n, \dots)
 }
 \arguments{
@@ -26,6 +26,12 @@ passed to \code{abc.ci} as part of the \code{\dots{}} argument.
 \item{index}{
 If \code{statistic} returns a vector of length greater than 1, then this indicates
 the position of the variable of interest within that vector.
+}
+\item{dimension}{
+  The dimension of the \code{data} object that should be bootstrapped over.
+  It corresponds to: 1 = rows, 2 = columns, 3 = 3rd dimension, etc. This dimension
+  should match the dimension of the \code{indices} argument in the supplied
+  \code{statistic}. Default is 1.
 }
 \item{strata}{
 A factor or numerical vector indicating to which sample each

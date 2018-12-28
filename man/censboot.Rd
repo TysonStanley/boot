@@ -11,7 +11,7 @@ resampling using a Cox regression model.
 }
 \usage{
 censboot(data, statistic, R, F.surv, G.surv, strata = matrix(1,n,2),
-         sim = "ordinary", cox = NULL, index = c(1, 2), \dots,
+         dimension = 1, sim = "ordinary", cox = NULL, index = c(1, 2), \dots,
          parallel = c("no", "multicore", "snow"),
          ncpus = getOption("boot.ncpus", 1L), cl = NULL)
 }
@@ -67,6 +67,12 @@ censboot(data, statistic, R, F.surv, G.surv, strata = matrix(1,n,2),
     censoring times are considered fixed.  When \code{sim = "ordinary"}, only
     one set of strata is used to stratify the observations, this is taken to
     be the first column of \code{strata} when it is a matrix.
+  }
+  \item{dimension}{
+    The dimension of the \code{data} object that should be bootstrapped over.
+    It corresponds to: 1 = rows, 2 = columns, 3 = 3rd dimension, etc. This dimension
+    should match the dimension of the \code{indices} argument in the supplied
+    \code{statistic}. Default is 1.
   }
   \item{sim}{
     The simulation type.  Possible types are \code{"ordinary"} (case

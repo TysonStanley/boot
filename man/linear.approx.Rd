@@ -10,7 +10,7 @@ that bootstrap sample.
 }
 \usage{
 linear.approx(boot.out, L = NULL, index = 1, type = NULL,
-              t0 = NULL, t = NULL, \dots)
+              dimension = 1, t0 = NULL, t = NULL, \dots)
 }
 \arguments{
 \item{boot.out}{
@@ -30,6 +30,12 @@ The index of the variable of interest within the output of
 This gives the type of empirical influence values to be calculated.  It is
 not used if \code{L} is supplied.  The possible types of empirical influence
 values are described in the help for \code{\link{empinf}}.
+}
+\item{dimension}{
+  The dimension of the \code{data} object that should be bootstrapped over.
+  It corresponds to: 1 = rows, 2 = columns, 3 = 3rd dimension, etc. This dimension
+  should match the dimension of the \code{indices} argument in the supplied
+  \code{statistic}. Default is 1.
 }
 \item{t0}{
 The observed value of the statistic of interest.  The input value is used only 
