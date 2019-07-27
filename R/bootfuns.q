@@ -1651,7 +1651,7 @@ cens.resamp <- function(data, R, F.surv, G.surv, strata, dimension = 1, index = 
 }
 
 empinf <- function(boot.out = NULL, data = NULL, statistic = NULL,
-                   dimension = 1, type = NULL, stype = NULL ,index = 1, t = NULL,
+                   dimension, type = NULL, stype = NULL ,index = 1, t = NULL,
                    strata = rep(1, n), eps = 0.001, ...)
 {
 #
@@ -1770,7 +1770,7 @@ inf.jack <-
     L
 }
 
-empinf.reg <- function(boot.out, t = boot.out$t[,1L], dimension = 1)
+empinf.reg <- function(boot.out, t = boot.out$t[,1L], dimension)
 #
 #  Function to estimate empirical influence values using regression.
 #  This method regresses the observed bootstrap values on the bootstrap
@@ -1789,9 +1789,11 @@ empinf.reg <- function(boot.out, t = boot.out$t[,1L], dimension = 1)
     }
     
     strata <- boot.out$strata
-    if (is.null(strata))
-        strata <- rep(1,n)
-    else 	strata <- tapply(strata,as.numeric(strata))
+    if (is.null(strata)){
+      strata <- rep(1,n)
+    } else {
+      strata <- tapply(strata,as.numeric(strata))
+    }
     ns <- table(strata)
 #    S <- length(ns)
     f <- boot.array(boot.out)[fins,]

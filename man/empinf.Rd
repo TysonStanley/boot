@@ -14,7 +14,7 @@
 }
 \usage{
 empinf(boot.out = NULL, data = NULL, statistic = NULL,
-       dimension = 1, type = NULL, stype = NULL ,index = 1, t = NULL,
+       dimension, type = NULL, stype = NULL ,index = 1, t = NULL,
        strata = rep(1, n), eps = 0.001, ...)
 }
 \arguments{
